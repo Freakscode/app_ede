@@ -1,89 +1,54 @@
 package com.example.appede
 
-import android.annotation.SuppressLint
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
 import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.appede.data.local.AppDatabase
 import com.example.appede.data.local.entity.User
-import com.example.appede.ui.components.HelloWorld
-import com.example.appede.ui.theme.AppEDETheme
-import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    @SuppressLint("CoroutineCreationDuringComposition")
+    private lateinit var database: AppDatabase
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
-        setContent {
-            AppEDETheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    HelloWorld(
-                        modifier = Modifier.padding(innerPadding)
-                    )
-                }
+        setContentView(R.layout.main_activity)
+
+        database = Room.databaseBuilder(
+            application, AppDatabase::class.java, AppDatabase.DATABASE_NAME
+        )
+            .allowMainThreadQueries()
+            .build()
+        saveUsers()
+
+
+        val btnUsuarios = findViewById<Button>(R.id.btnUsuarios)
+        val usuarios = findViewById<TextView>(R.id.usuarios)
+        btnUsuarios.setOnClickListener {
+            val users = database.daoUser.getAllUsers()
+            users.forEach { user ->
+                usuarios.append("${user.id}, ${user.email}, ${user.password}, ${user.personaId}, ${user.status}, ${user.role}\n")
             }
         }
+    }
 
-        //Room
-        val database =
-            Room.databaseBuilder(this, AppDatabase::class.java, "db_appede")
-                .build()
-
-        lifecycleScope.launch {
-            database.daoUser.insert(
-                User(
-                    personaId = 123,
-                    email = "email",
-                    password = "password",
-                    id = 1,
-                    status = true,
-                    role = ""
-                )
-            )
-            database.daoUser.insert(
-                User(
-                    personaId = 1234,
-                    email = "email",
-                    password = "password",
-                    id = 2,
-                    status = true,
-                    role = ""
-                )
-            )
-
-            var usuarios = database.daoUser.getUserByIdiPersona(123)
-            println(usuarios)
-
-        }
-
+    private fun saveUsers() {
+        val user1 = User(
+            personaId = 123,
+            email = "juan@gmail.com",
+            password = "pass23dddsdc+",
+            status = true,
+            role = ""
+        )
+        val user2 = User(
+            personaId = 1234,
+            email = "pedro@gmail.com",
+            password = "22222",
+            status = true,
+            role = ""
+        )
+        database.daoUser.insert(user1)
+        database.daoUser.insert(user2)
 
     }
 }
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    AppEDETheme {
-        Greeting("Android")
-    }
-}
-
