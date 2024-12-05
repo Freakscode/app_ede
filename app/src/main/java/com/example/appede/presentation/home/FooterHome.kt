@@ -32,8 +32,8 @@ fun FooterHome(
     Column(
         modifier = modifier
             .fillMaxWidth()
-            .height(120.dp)
-            .clip(RoundedCornerShape(topStart = 8.dp, topEnd = 8.dp))
+            .height(100.dp)
+            .clip(RoundedCornerShape(topStart = 30.dp, topEnd = 30.dp))
             .background(MaterialTheme.colorScheme.primary)
             .padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
