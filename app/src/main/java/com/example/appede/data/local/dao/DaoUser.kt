@@ -10,9 +10,13 @@ import com.example.appede.data.local.entity.User
 interface DaoUser {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    fun insert(user: User): Long
+    suspend fun insert(user: User): Long
+
+
+    @Query("SELECT COUNT(*) > 0 FROM user_table WHERE persona_id = :personaID AND password = :psd")
+    suspend fun isValidUser(personaID: String, psd: String): Boolean
 
     @Query("SELECT * FROM user_table")
-    fun getAllUsers(): List<User>
+    suspend fun getAllUsers(): List<User>
 
 }
