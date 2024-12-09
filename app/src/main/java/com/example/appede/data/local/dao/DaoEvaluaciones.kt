@@ -1,5 +1,6 @@
 package com.example.appede.data.local.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Delete
 import androidx.room.Insert
@@ -21,11 +22,11 @@ interface DaoEvaluaciones {
 
     // Obtener todas las evaluaciones
     @Query("SELECT * FROM evaluaciones_table")
-    suspend fun getAllEvaluaciones(): List<Evaluaciones>
+    fun getAllEvaluaciones(): LiveData<List<Evaluaciones>>
 
     // Obtener evaluaciones por usuario (relación con el ID del usuario)
     @Query("SELECT * FROM evaluaciones_table WHERE usuario_id = :usuarioId")
-    suspend fun getEvaluacionesByUsuario(usuarioId: Int): List<Evaluaciones>
+    fun getEvaluacionesByUsuario(usuarioId: Int): List<Evaluaciones>
 
     // Actualizar una evaluación
     @Update
@@ -37,6 +38,6 @@ interface DaoEvaluaciones {
 
     // Eliminar todas las evaluaciones
     @Query("DELETE FROM evaluaciones_table")
-    suspend fun deleteAllEvaluaciones(): Int
+    fun deleteAllEvaluaciones(): Int
 }
 

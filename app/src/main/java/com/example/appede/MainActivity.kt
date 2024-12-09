@@ -8,6 +8,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -15,31 +16,42 @@ import androidx.lifecycle.LifecycleCoroutineScope
 import androidx.lifecycle.lifecycleScope
 import androidx.room.Room
 import com.example.appede.data.local.AppDatabase
+import com.example.appede.data.local.ViewModel.AppViewModel
+import com.example.appede.data.local.repository.appRepository
+import com.example.appede.ui.EvaluacionForm
+import com.example.appede.ui.EvaluacionesList
 import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-    private lateinit var database: AppDatabase
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        database = Room.databaseBuilder(
-            application, AppDatabase::class.java, AppDatabase.DATABASE_NAME
-        )
-            .allowMainThreadQueries()
-            .build()
-
         setContent {
-            LoginScreen(database, lifecycleScope)
+            HomeScreen()
         }
     }
 }
 
 @Composable
-fun LoginScreen(database: AppDatabase, lifecycleScope: LifecycleCoroutineScope) {
-    // Estados para el usuario, la contraseña y el mensaje de validación
+fun HomeScreen() {
+    val context = LocalContext.current
+    val database = AppDatabase.getInstance(context)
+    val repository = appRepository(database.daoUser, database.daoEvaluaciones)
+    val viewModel = AppViewModel(repository)
+    //LoginScreen(viewModel)
+    //EvaluacionesScreen(viewModel)
+    //EvaluacionForm(viewModel)
+    EvaluacionesList(viewModel)
+}
+
+@Composable
+fun LoginScreen(viewModel: AppViewModel) {
+    val context = LocalContext.current
+    val database = AppDatabase.getInstance(context)
+    val coroutineScope = rememberCoroutineScope() // Scope local para este composable
+
     val username = remember { mutableStateOf("") }
     val password = remember { mutableStateOf("") }
-    val loginMessage = remember { mutableStateOf("") } // Mensaje dinámico
+    val loginMessage = remember { mutableStateOf("") }
 
     // Contenido de la pantalla
     Column(
@@ -76,8 +88,8 @@ fun LoginScreen(database: AppDatabase, lifecycleScope: LifecycleCoroutineScope) 
         Button(
             onClick = {
                 // Validación del usuario dentro de una corrutina
-                lifecycleScope.launch {
-                    val isValidUser = database.daoUser.isValidUser(username.value, password.value)
+                coroutineScope.launch {
+                    val isValidUser =  viewModel.isValidUser(username.value, password.value)
                     loginMessage.value = if (isValidUser) {
                         "Inicio de sesión exitoso"
                     } else {
@@ -103,6 +115,12 @@ fun LoginScreen(database: AppDatabase, lifecycleScope: LifecycleCoroutineScope) 
         }
     }
 }
+
+
+
+
+
+
 
 /*
 ####### Implementación inicial #######
