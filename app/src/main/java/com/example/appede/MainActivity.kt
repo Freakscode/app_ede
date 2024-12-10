@@ -38,9 +38,8 @@ fun HomeScreen() {
     val repository = appRepository(database.daoUser, database.daoEvaluaciones)
     val viewModel = AppViewModel(repository)
     //LoginScreen(viewModel)
-    //EvaluacionesScreen(viewModel)
-    //EvaluacionForm(viewModel)
-    EvaluacionesList(viewModel)
+    EvaluacionForm(viewModel)
+    //EvaluacionesList(viewModel)
 }
 
 @Composable
