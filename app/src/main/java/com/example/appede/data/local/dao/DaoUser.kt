@@ -12,11 +12,12 @@ interface DaoUser {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(user: User): Long
 
-
     @Query("SELECT COUNT(*) > 0 FROM user_table WHERE persona_id = :personaID AND password = :psd")
-    suspend fun isValidUser(personaID: String, psd: String): Boolean
+    suspend fun isValidUser(personaID: Int, psd: String): Boolean
 
-    @Query("SELECT * FROM user_table")
-    suspend fun getAllUsers(): List<User>
+    @Query("SELECT * FROM user_table WHERE id = :id")
+    suspend fun getUserById(id: Int): User?
 
+    @Query("SELECT * FROM user_table WHERE persona_id = :personaId LIMIT 1")
+    suspend fun getUserByPersonaId(personaId: Int): User?
 }

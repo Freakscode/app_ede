@@ -1,5 +1,6 @@
 package com.example.appede.presentation.home.login
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,23 +12,20 @@ import com.example.appede.presentation.home.FooterHome
 import com.example.appede.ui.theme.AppEDETheme
 
 @Composable
-fun HomeScreen() {
-    Box(
-        modifier = Modifier.fillMaxSize()
-    )
-    {
-        Column (
-            modifier = Modifier.fillMaxSize()
-        ){
+fun LoginScreen(
+    onLoginSuccess: (Int) -> Unit = {}
+) {
+    Box(modifier = Modifier.fillMaxSize()) {
+        Column(modifier = Modifier.fillMaxSize()) {
             HeaderHome()
             LoginForm(
-                modifier = Modifier.weight(1f)
+                onLoginSuccess = { userId ->
+                    Log.d("LoginScreen", "Navegando a Home con userId=$userId")
+                    onLoginSuccess(userId)
+                }
             )
         }
-
-        FooterHome(
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+        FooterHome(modifier = Modifier.align(Alignment.BottomCenter))
     }
 }
 
@@ -37,7 +35,7 @@ fun HomeScreen() {
 )
 fun HomeScreenPreview() {
     AppEDETheme {
-        HomeScreen()
+        LoginScreen()
     }
 }
 
