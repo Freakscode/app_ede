@@ -154,7 +154,7 @@ fun LoginForm(
             },
             enabled = isDatabaseReady, // Deshabilita el botón si la base de datos no está lista
             colors = ButtonDefaults.buttonColors(
-                MaterialTheme.colorScheme.primaryContainer
+                Color(0xFAD502)
             ),
             modifier = Modifier
                 .fillMaxWidth()
